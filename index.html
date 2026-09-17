@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure Battles | Conta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <section class="card">
+            <div class="logo">FIGURE<br><span>BATTLES</span></div>
+
+            <div id="loginView">
+                <h1>Entrar</h1>
+                <p class="subtitle">Entre na sua conta do Figure Battles.</p>
+
+                <label for="loginEmail">E-mail</label>
+                <input id="loginEmail" type="email" autocomplete="email" placeholder="seu@email.com">
+
+                <label for="loginPassword">Senha</label>
+                <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Sua senha">
+
+                <button id="loginButton">ENTRAR</button>
+
+                <p class="switch">Ainda não tem conta?
+                    <button class="textButton" id="showRegister">Criar conta</button>
+                </p>
+            </div>
+
+            <div id="registerView" class="hidden">
+                <h1>Criar conta</h1>
+                <p class="subtitle">Crie seu perfil para aparecer no ranking.</p>
+
+                <label for="registerUsername">Username</label>
+                <input id="registerUsername" type="text" maxlength="20" autocomplete="username" placeholder="Ex: AxelPlayer">
+
+                <label for="registerEmail">E-mail</label>
+                <input id="registerEmail" type="email" autocomplete="email" placeholder="seu@email.com">
+
+                <label for="registerPassword">Senha</label>
+                <input id="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres">
+
+                <label for="registerPassword2">Confirmar senha</label>
+                <input id="registerPassword2" type="password" autocomplete="new-password" placeholder="Digite a senha novamente">
+
+                <button id="registerButton">CRIAR CONTA</button>
+
+                <p class="switch">Já tem uma conta?
+                    <button class="textButton" id="showLogin">Entrar</button>
+                </p>
+            </div>
+
+            <div id="profileView" class="hidden">
+                <h1>Perfil</h1>
+                <p class="subtitle">Você está conectado ao Figure Battles.</p>
+
+                <div class="profileBox">
+                    <span>USERNAME</span>
+                    <strong id="profileUsername">---</strong>
+                </div>
+
+                <div class="profileBox">
+                    <span>E-MAIL</span>
+                    <strong id="profileEmail">---</strong>
+                </div>
+
+                <button id="logoutButton" class="secondary">SAIR</button>
+            </div>
+
+            <p id="message" class="message"></p>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+</html>
