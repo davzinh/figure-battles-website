@@ -167,7 +167,7 @@ async function loadProfile(user) {
 
     const { data: profile, error } = await db
         .from("profiles")
-        .select("username")
+        .select("username, wins, losses, matches")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -184,6 +184,9 @@ async function loadProfile(user) {
 
     document.getElementById("profileUsername").textContent = profile.username;
     document.getElementById("profileEmail").textContent = user.email || "---";
+    document.getElementById("profileWins").textContent = profile.wins;
+    document.getElementById("profileLosses").textContent = profile.losses;
+    document.getElementById("profileMatches").textContent = profile.matches;
 
     showView(profileView);
 }
