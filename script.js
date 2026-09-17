@@ -139,11 +139,14 @@ async function register() {
     }
 
     const { error: profileError } = await db
-        .from("profiles")
-        .insert({
-            id: data.user.id,
-            username: username
-        });
+    .from("profiles")
+    .insert({
+        id: data.user.id,
+        username: username,
+        wins: 0,
+        losses: 0,
+        matches: 0
+    });
 
     registerButton.disabled = false;
 
