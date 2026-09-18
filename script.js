@@ -62,10 +62,23 @@ function showView(view) {
 // CONEXÃO DO GAMEMAKER
 // =====================================================
 
+// Pega o código enviado pelo GameMaker na URL.
+// Exemplo:
+// ?code=FB-2356-2518
+
+const urlParams = new URLSearchParams(window.location.search);
+const gameConnectionCode = urlParams.get("code");
+
+
 async function connectGameMaker(user) {
+
     if (!gameConnectionCode) {
         return;
     }
+
+    console.log("Tentando conectar GameMaker...");
+    console.log("Código:", gameConnectionCode);
+    console.log("User ID:", user.id);
 
     const { data, error } = await db
         .from("game_connections")
@@ -77,30 +90,35 @@ async function connectGameMaker(user) {
         .select();
 
     if (error) {
-        showMessage("Erro ao conectar o jogo: " + error.message);
-        console.error(error);
+
+        console.error("ERRO AO CONECTAR GAMEMAKER:", error);
+
+        showMessage(
+            "Erro ao conectar o jogo: "
+            + error.message
+        );
+
         return;
     }
 
     if (!data || data.length === 0) {
-        showMessage("Código de conexão não encontrado.");
+
+        console.error(
+            "Nenhuma conexão encontrada para:",
+            gameConnectionCode
+        );
+
+        showMessage(
+            "Código de conexão não encontrado."
+        );
+
         return;
     }
-
-    showMessage("Jogo conectado com sucesso!");
-
-    window.history.replaceState(
-        {},
-        document.title,
-        window.location.pathname
-    );
-}
 
     console.log("=================================");
     console.log("FIGURE BATTLES CONECTADO");
     console.log("Código:", gameConnectionCode);
     console.log("User ID:", user.id);
-    console.log("Username:", user.email);
     console.log("=================================");
 
     showMessage(
@@ -108,32 +126,12 @@ async function connectGameMaker(user) {
     );
 
     // Remove o código da URL depois da conexão.
-    // Assim, ao atualizar a página, ele não tenta
-    // conectar novamente.
     window.history.replaceState(
         {},
         document.title,
         window.location.pathname
     );
 }
-
-
-// =====================================================
-// NAVEGAÇÃO
-// =====================================================
-
-document.getElementById("showRegister").addEventListener("click", () => {
-    showView(registerView);
-});
-
-document.getElementById("showLogin").addEventListener("click", () => {
-    showView(loginView);
-});
-
-loginButton.addEventListener("click", login);
-registerButton.addEventListener("click", register);
-logoutButton.addEventListener("click", logout);
-
 
 // =====================================================
 // LOGIN
