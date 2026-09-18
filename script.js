@@ -2,13 +2,9 @@
 // =====================================================
 // FIGURE BATTLES - CONTA script.js
 // =====================================================
-// IMPORTANTE:
-// coloque sua PUBLISHABLE KEY do Supabase abaixo.
-// NUNCA coloque uma service_role/secret key neste arquivo.
-// =====================================================
 
 const SUPABASE_URL = "https://llvdfjmxyopbxfvetdsv.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_aZWj95xL5mk8AtUjo99R9g_njRnatQo";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_IioX1D-rer3Pv6skMbWGxQ_asilSyQN";
 
 const { createClient } = supabase;
 
@@ -16,6 +12,11 @@ const db = createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
+
+
+// =====================================================
+// ELEMENTOS
+// =====================================================
 
 const loginView = document.getElementById("loginView");
 const registerView = document.getElementById("registerView");
@@ -31,11 +32,8 @@ const logoutButton = document.getElementById("logoutButton");
 // CONEXÃO COM O GAMEMAKER
 // =====================================================
 
-// Pega o código enviado pelo GameMaker na URL.
-// Exemplo:
-// ?code=FB-A82K91
-
 const urlParams = new URLSearchParams(window.location.search);
+
 const gameConnectionCode = urlParams.get("code");
 
 
@@ -47,7 +45,9 @@ function showMessage(text) {
     message.textContent = text;
 }
 
+
 function showView(view) {
+
     loginView.classList.add("hidden");
     registerView.classList.add("hidden");
     profileView.classList.add("hidden");
@@ -59,16 +59,8 @@ function showView(view) {
 
 
 // =====================================================
-// CONEXÃO DO GAMEMAKER
+// CONECTAR GAMEMAKER
 // =====================================================
-
-// Pega o código enviado pelo GameMaker na URL.
-// Exemplo:
-// ?code=FB-2356-2518
-
-const urlParams = new URLSearchParams(window.location.search);
-const gameConnectionCode = urlParams.get("code");
-
 
 async function connectGameMaker(user) {
 
@@ -76,9 +68,12 @@ async function connectGameMaker(user) {
         return;
     }
 
-    console.log("Tentando conectar GameMaker...");
-    console.log("Código:", gameConnectionCode);
-    console.log("User ID:", user.id);
+    console.log("=================================");
+    console.log("TENTANDO CONECTAR GAMEMAKER");
+    console.log("CÓDIGO:", gameConnectionCode);
+    console.log("USER ID:", user.id);
+    console.log("=================================");
+
 
     const { data, error } = await db
         .from("game_connections")
@@ -89,9 +84,13 @@ async function connectGameMaker(user) {
         .eq("code", gameConnectionCode)
         .select();
 
+
     if (error) {
 
-        console.error("ERRO AO CONECTAR GAMEMAKER:", error);
+        console.error(
+            "ERRO AO CONECTAR GAMEMAKER:",
+            error
+        );
 
         showMessage(
             "Erro ao conectar o jogo: "
@@ -101,10 +100,11 @@ async function connectGameMaker(user) {
         return;
     }
 
+
     if (!data || data.length === 0) {
 
         console.error(
-            "Nenhuma conexão encontrada para:",
+            "CÓDIGO NÃO ENCONTRADO:",
             gameConnectionCode
         );
 
@@ -115,23 +115,56 @@ async function connectGameMaker(user) {
         return;
     }
 
+
     console.log("=================================");
     console.log("FIGURE BATTLES CONECTADO");
-    console.log("Código:", gameConnectionCode);
-    console.log("User ID:", user.id);
+    console.log("CÓDIGO:", gameConnectionCode);
+    console.log("USER ID:", user.id);
     console.log("=================================");
+
 
     showMessage(
         "Conta conectada ao Figure Battles!"
     );
 
-    // Remove o código da URL depois da conexão.
+
+    // Remove o código da URL.
     window.history.replaceState(
         {},
         document.title,
         window.location.pathname
     );
 }
+
+
+// =====================================================
+// NAVEGAÇÃO
+// =====================================================
+
+document
+    .getElementById("showRegister")
+    .addEventListener("click", () => {
+
+        showView(registerView);
+
+    });
+
+
+document
+    .getElementById("showLogin")
+    .addEventListener("click", () => {
+
+        showView(loginView);
+
+    });
+
+
+loginButton.addEventListener("click", login);
+
+registerButton.addEventListener("click", register);
+
+logoutButton.addEventListener("click", logout);
+
 
 // =====================================================
 // LOGIN
@@ -148,26 +181,41 @@ async function login() {
         .getElementById("loginPassword")
         .value;
 
+
     if (!email || !password) {
-        showMessage("Preencha e-mail e senha.");
+
+        showMessage(
+            "Preencha e-mail e senha."
+        );
+
         return;
     }
+
 
     loginButton.disabled = true;
 
     showMessage("Entrando...");
 
-    const { data, error } = await db.auth.signInWithPassword({
-        email,
-        password
-    });
+
+    const { data, error } =
+        await db.auth.signInWithPassword({
+
+            email,
+            password
+
+        });
+
 
     loginButton.disabled = false;
 
+
     if (error) {
+
         showMessage(error.message);
+
         return;
     }
+
 
     await loadProfile(data.user);
 }
@@ -199,6 +247,7 @@ async function register() {
 
 
     if (username.length < 3) {
+
         showMessage(
             "O username precisa ter pelo menos 3 caracteres."
         );
@@ -208,6 +257,7 @@ async function register() {
 
 
     if (username.length > 20) {
+
         showMessage(
             "O username pode ter no máximo 20 caracteres."
         );
@@ -217,12 +267,17 @@ async function register() {
 
 
     if (!email || !password) {
-        showMessage("Preencha todos os campos.");
+
+        showMessage(
+            "Preencha todos os campos."
+        );
+
         return;
     }
 
 
     if (password.length < 6) {
+
         showMessage(
             "A senha precisa ter pelo menos 6 caracteres."
         );
@@ -232,7 +287,11 @@ async function register() {
 
 
     if (password !== password2) {
-        showMessage("As senhas não são iguais.");
+
+        showMessage(
+            "As senhas não são iguais."
+        );
+
         return;
     }
 
@@ -242,10 +301,13 @@ async function register() {
     showMessage("Criando conta...");
 
 
-    const { data, error } = await db.auth.signUp({
-        email,
-        password
-    });
+    const { data, error } =
+        await db.auth.signUp({
+
+            email,
+            password
+
+        });
 
 
     if (error) {
@@ -282,15 +344,18 @@ async function register() {
     }
 
 
-    const { error: profileError } = await db
-        .from("profiles")
-        .insert({
-            id: data.user.id,
-            username: username,
-            wins: 0,
-            losses: 0,
-            matches: 0
-        });
+    const { error: profileError } =
+        await db
+            .from("profiles")
+            .insert({
+
+                id: data.user.id,
+                username: username,
+                wins: 0,
+                losses: 0,
+                matches: 0
+
+            });
 
 
     registerButton.disabled = false;
@@ -310,6 +375,7 @@ async function register() {
                 "Conta criada, mas houve um erro ao criar o perfil: "
                 + profileError.message
             );
+
         }
 
         return;
@@ -326,14 +392,19 @@ async function register() {
 
 async function loadProfile(user) {
 
-    showMessage("Carregando perfil...");
+    showMessage(
+        "Carregando perfil..."
+    );
 
 
-    const { data: profile, error } = await db
-        .from("profiles")
-        .select("username, wins, losses, matches")
-        .eq("id", user.id)
-        .maybeSingle();
+    const { data: profile, error } =
+        await db
+            .from("profiles")
+            .select(
+                "username, wins, losses, matches"
+            )
+            .eq("id", user.id)
+            .maybeSingle();
 
 
     if (error) {
@@ -359,27 +430,38 @@ async function loadProfile(user) {
     }
 
 
-    document.getElementById("profileUsername")
+    document
+        .getElementById("profileUsername")
         .textContent = profile.username;
 
-    document.getElementById("profileEmail")
+
+    document
+        .getElementById("profileEmail")
         .textContent = user.email || "---";
 
-    document.getElementById("profileWins")
+
+    document
+        .getElementById("profileWins")
         .textContent = profile.wins;
 
-    document.getElementById("profileLosses")
+
+    document
+        .getElementById("profileLosses")
         .textContent = profile.losses;
 
-    document.getElementById("profileMatches")
+
+    document
+        .getElementById("profileMatches")
         .textContent = profile.matches;
 
 
     showView(profileView);
 
 
-    // Depois que o perfil foi carregado,
-    // tenta conectar o GameMaker.
+    // =================================================
+    // CONECTA O GAMEMAKER DEPOIS DO LOGIN
+    // =================================================
+
     await connectGameMaker(user);
 }
 
@@ -394,7 +476,9 @@ async function logout() {
 
     showView(loginView);
 
-    showMessage("Você saiu da conta.");
+    showMessage(
+        "Você saiu da conta."
+    );
 }
 
 
@@ -404,12 +488,18 @@ async function logout() {
 
 async function checkSession() {
 
-    const { data } = await db.auth.getSession();
+    const { data } =
+        await db.auth.getSession();
 
 
-    if (data.session && data.session.user) {
+    if (
+        data.session &&
+        data.session.user
+    ) {
 
-        await loadProfile(data.session.user);
+        await loadProfile(
+            data.session.user
+        );
 
     } else {
 
@@ -420,3 +510,4 @@ async function checkSession() {
 
 
 checkSession();
+
