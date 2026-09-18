@@ -63,14 +63,9 @@ function showView(view) {
 // =====================================================
 
 async function connectGameMaker(user) {
-
-    // Se não existe código na URL,
-    // essa visita ao site não veio do GameMaker.
     if (!gameConnectionCode) {
         return;
     }
-
-    showMessage("Conectando ao Figure Battles...");
 
     const { data, error } = await db
         .from("game_connections")
@@ -82,23 +77,24 @@ async function connectGameMaker(user) {
         .select();
 
     if (error) {
-        console.error("Erro ao conectar GameMaker:", error);
-
-        showMessage(
-            "Erro ao conectar o jogo: " + error.message
-        );
-
+        showMessage("Erro ao conectar o jogo: " + error.message);
+        console.error(error);
         return;
     }
 
     if (!data || data.length === 0) {
-
-        showMessage(
-            "Código de conexão inválido ou expirado."
-        );
-
+        showMessage("Código de conexão não encontrado.");
         return;
     }
+
+    showMessage("Jogo conectado com sucesso!");
+
+    window.history.replaceState(
+        {},
+        document.title,
+        window.location.pathname
+    );
+}
 
     console.log("=================================");
     console.log("FIGURE BATTLES CONECTADO");
